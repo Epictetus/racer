@@ -1,6 +1,8 @@
 require "mkmf"
 
-$CFLAGS << " -std=c99"
+$CFLAGS << " -std=c99 -fPIC"
+
+$DLDFLAGS << " -fPIC"
 
 if RUBY_PLATFORM =~ /darwin/
   $DLDFLAGS << " -framework CoreServices"
