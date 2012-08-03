@@ -1,14 +1,14 @@
-# ricer
+# racer
 
 A Rack-compliant ruby web server. It's written in C cuz its fast.
 
 ![sick ride](http://i.imgur.com/HnPbK.jpg)
 
-> *ricer is almost as fast as this car*
+> *racer is almost as fast as this car*
 
 ## Benchmark
 
-The following Rack app was used benchmark WEBrick, Unicorn, Thin and Ricer:
+The following Rack app was used benchmark WEBrick, Unicorn, Thin and Racer:
 
 ```ruby
 run ->env { [200, { "Content-Type" => "text/html" }, ["hello world"]] }
