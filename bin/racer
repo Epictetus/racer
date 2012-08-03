@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 require "optparse"
-require "ricer"
+require "racer"
 
 options = { address: "0.0.0.0", port: 3000, rackup: "#{Dir.pwd}/config.ru" }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: ricer [options]"
+  opts.banner = "Usage: racer [options]"
   
   opts.on "-a IP", "--address IP", "Address to listen on" do |a|
     options[:address] = a
@@ -21,12 +21,12 @@ OptionParser.new do |opts|
 end.parse!
 
 Object.send :define_method, :run do |app|
-  puts "Ricer #{Ricer::VERSION}"
+  puts "Racer #{Racer::VERSION}"
   puts "Listening on #{options[:address]}:#{options[:port]}"
   begin
-    Ricer.run options[:address], options[:port], app
+    Racer.run options[:address], options[:port], app
   ensure
-    puts "Served #{Ricer::Stats.total_requests} requests."
+    puts "Served #{Racer::Stats.total_requests} requests."
   end
 end
 

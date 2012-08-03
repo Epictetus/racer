@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include "http_parser.h"
 
-#define SERVER_SOFTWARE "Ricer"
+#define SERVER_SOFTWARE "Racer"
 #define MAX_HEADER_SIZE 4096
 
 typedef enum last_callback {
@@ -41,8 +41,8 @@ typedef struct client {
 
 static VALUE globals;
 
-static VALUE Ricer;
-static VALUE RicerStats;
+static VALUE Racer;
+static VALUE RacerStats;
 static ID i_new;
 static ID i_call;
 static ID i_to_i;
@@ -65,7 +65,7 @@ static VALUE sSERVER_NAME;
 static VALUE sSERVER_SOFTWARE;
 static VALUE sSERVER_PORT;
 static VALUE sREQUEST_PATH;
-static VALUE sRicer;
+static VALUE sRacer;
 static VALUE s_empty;
 static VALUE s_crlf;
 static VALUE s_colon_space;
@@ -80,12 +80,12 @@ static VALUE sRackRunOnce;
 static VALUE sRackUrlScheme;
 static VALUE HTTP_URL_SCHEME;
 
-static uv_buf_t uv_ricer_alloc(uv_handle_t* handle, size_t suggested_size)
+static uv_buf_t uv_racer_alloc(uv_handle_t* handle, size_t suggested_size)
 {
     return uv_buf_init((char*)malloc(suggested_size), (uint32_t)suggested_size);
 }
 
-static void uv_ricer_free(uv_buf_t buff)
+static void uv_racer_free(uv_buf_t buff)
 {
     free(buff.base);
 }
@@ -367,7 +367,7 @@ static int on_http_message_begin(http_parser* parser)
     // initialize environment for new request:
     client->body = rb_str_new("", 0);
     client->env = rb_hash_new();
-    rb_hash_aset(client->env, sSERVER_SOFTWARE, sRicer);
+    rb_hash_aset(client->env, sSERVER_SOFTWARE, sRacer);
     rb_hash_aset(client->env, sSERVER_PORT, INT2FIX(port));
     rb_hash_aset(client->env, sRackVersion, RACK_VERSION);
     rb_hash_aset(client->env, sRackMultithread, Qfalse);
@@ -402,7 +402,7 @@ static void on_read(uv_stream_t* stream, ssize_t nread, uv_buf_t buff)
             }
         }
     }
-    uv_ricer_free(buff);
+    uv_racer_free(buff);
 }
 
 static void on_connection(uv_stream_t* server, int status)
@@ -428,7 +428,7 @@ static void on_connection(uv_stream_t* server, int status)
     client->body = Qnil;
     rb_gc_register_address(&client->body);
     
-    uv_read_start((uv_stream_t*)&client->socket, uv_ricer_alloc, on_read);
+    uv_read_start((uv_stream_t*)&client->socket, uv_racer_alloc, on_read);
 }
 
 static void run(struct sockaddr_in addr, VALUE _app)
@@ -464,10 +464,10 @@ cleanup:
     }
 }
 
-static VALUE Ricer_run(VALUE self, VALUE v_address, VALUE v_port, VALUE app)
+static VALUE Racer_run(VALUE self, VALUE v_address, VALUE v_port, VALUE app)
 {
     if(loop) {
-        rb_raise(rb_eRuntimeError, "Ricer instance already running");
+        rb_raise(rb_eRuntimeError, "Racer instance already running");
     }
     long _port = FIX2INT(v_port);
     if(_port <= 0 || _port >= 65536) {
@@ -481,7 +481,7 @@ static VALUE Ricer_run(VALUE self, VALUE v_address, VALUE v_port, VALUE app)
     return Qnil;
 }
 
-static VALUE RicerStats_total_requests(VALUE self)
+static VALUE RacerStats_total_requests(VALUE self)
 {
     return INT2FIX(total_requests);
 }
@@ -491,7 +491,7 @@ static void on_sigint(int signal)
     rb_interrupt();
 }
 
-void Init_ricer()
+void Init_racer()
 {    
     rb_gc_register_address(&app);
     
@@ -504,14 +504,14 @@ void Init_ricer()
     i_each = rb_intern("each");
     i_close = rb_intern("close");
     
-    Ricer = rb_define_module("Ricer");
-    rb_ary_push(globals, Ricer);
-    rb_define_singleton_method(Ricer, "run", Ricer_run, 3);
+    Racer = rb_define_module("Racer");
+    rb_ary_push(globals, Racer);
+    rb_define_singleton_method(Racer, "run", Racer_run, 3);
     
-    RicerStats = rb_define_module_under(Ricer, "Stats");
-    rb_ary_push(globals, RicerStats);
+    RacerStats = rb_define_module_under(Racer, "Stats");
+    rb_ary_push(globals, RacerStats);
     
-    rb_define_singleton_method(RicerStats, "total_requests", RicerStats_total_requests, 0);
+    rb_define_singleton_method(RacerStats, "total_requests", RacerStats_total_requests, 0);
     
     #define GLOBAL_STR(var, str) var = rb_obj_freeze(rb_str_new_cstr(str)); rb_ary_push(globals, var);
     
@@ -527,7 +527,7 @@ void Init_ricer()
     GLOBAL_STR(sSERVER_NAME,        "SERVER_NAME");
     GLOBAL_STR(sSERVER_SOFTWARE,    "SERVER_SOFTWARE");
     GLOBAL_STR(sSERVER_PORT,        "SERVER_PORT");
-    GLOBAL_STR(sRicer,              SERVER_SOFTWARE);
+    GLOBAL_STR(sRacer,              SERVER_SOFTWARE);
     
     GLOBAL_STR(sRackInput,          "rack.input");
     GLOBAL_STR(sRackErrors,         "rack.errors");
