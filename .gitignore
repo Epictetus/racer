@@ -5,3 +5,4 @@ tmp
 Makefile
 Gemfile.lock
 *.gem
+*.log
