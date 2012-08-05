@@ -22,5 +22,5 @@ ApacheBench was used to run the benchmarks with the following options:
 
 Here are the results:
 
-![science](http://i.imgur.com/ndmuG.png)
+![science](http://i.imgur.com/75GB8.png)
 
