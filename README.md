@@ -14,13 +14,13 @@ The following Rack app was used benchmark WEBrick, Unicorn, Thin and Racer:
 run ->env { [200, { "Content-Type" => "text/html" }, ["hello world"]] }
 ```
 
-Tests were carried out on a 32 bit Linux VM running in VirtualBox on an Intel Core 2 Quad Q6600.
+Tests were carried out on a 64 bit Linux VM running on an Intel Core i7 980X.
 
 ApacheBench was used to run the benchmarks with the following options:
 
-    ab -n 1000 -c <...> http://127.0.0.1:3000/
+    ab -n 10000 -c <...> http://127.0.0.1:3000/
 
 Here are the results:
 
-![science](http://i.imgur.com/IEsUr.png)
+![science](http://i.imgur.com/3vFMO.png)
 
