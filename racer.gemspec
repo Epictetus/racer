@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   s.executables = ["racer"]
   
   s.required_ruby_version = ">= 1.9.2"
+  s.add_dependency "rack", ["~> 1.2"]
 end

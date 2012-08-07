@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require "optparse"
 require "racer"
+require "rack"
 
 options = { address: "0.0.0.0", port: 3000, rackup: "#{Dir.pwd}/config.ru" }
 
@@ -14,20 +15,24 @@ OptionParser.new do |opts|
   opts.on "-p PORT", "--port PORT", "Port to listen on" do |p|
     options[:port] = p.to_i
   end
+
+  opts.on "-e ENVIRONMENT", "--env ENVIRONMENT", "Rack environment" do |e|
+    options[:env] = e
+  end
   
   opts.on "--rackup FILE", "Use specified file as rackup file" do |ru|
     options[:rackup] = ru
   end
 end.parse!
 
-Object.send :define_method, :run do |app|
-  puts "Racer #{Racer::VERSION}"
-  puts "Listening on #{options[:address]}:#{options[:port]}"
-  begin
-    Racer.run options[:address], options[:port], app
-  ensure
-    puts "Served #{Racer::Stats.total_requests} requests."
-  end
-end
+ENV["RACK_ENV"] = options[:env] || ENV["RACK_ENV"] || "development"
 
-load options[:rackup]
+app, rack_options = Rack::Builder.parse_file options[:rackup]
+
+puts "Racer #{Racer::VERSION}"
+puts "Listening on #{options[:address]}:#{options[:port]}"
+begin
+  Racer.run options[:address], options[:port], app
+ensure
+  puts "Served #{Racer::Stats.total_requests} requests."
+end
